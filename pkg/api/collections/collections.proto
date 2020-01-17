@@ -1,0 +1,149 @@
+syntax = "proto3";
+
+import "gogoproto/gogo.proto";
+
+package api.collections;
+
+option go_package = "qianlitech.com/cloud/backend/pkg/api/collections";
+
+option (gogoproto.goproto_registration) = true;
+
+// 关于类型表达式属性的引用
+message PropertyReference {
+  // 属性名字
+  // 如果名字中包含"."，需要将其解释为路径
+  string name = 2;
+}
+
+// 特定属性的排序(order)
+message Order {
+  // 排序方向
+  enum Direction {
+    // 升序
+    ASCENDING = 0;
+
+    // 降序
+    DESCENDING = 1;
+  }
+
+  // 排序属性
+  PropertyReference property = 1;
+
+  // 排序方向. 默认升序 `ASCENDING`.
+  Direction direction = 2;
+}
+
+// 包含任何类型的过滤器(filter)
+message Filter {
+    // 过滤器类型.
+    oneof filter_type {
+        // 复合过滤器
+        CompositeFilter compositeFilter = 1;
+
+        // 属性过滤器
+        PropertyFilter propertyFilter = 2;
+    }
+}
+
+// 复合过滤器(CompositeFilter)，根据操作符合并多个其他过滤器
+message CompositeFilter {
+  // 复合过滤器操作符
+  enum Operator {
+    // 结果要求满足每个过滤器
+    AND = 0;
+
+    // 结果要求满足任一过滤器
+    OR = 1;
+  }
+
+  // 组合多个过滤器的操作符
+  Operator op = 1;
+
+  // 组合的过滤器列表
+  // 必需包含至少一个过滤器
+  repeated Filter filters = 2;
+}
+
+// 属性过滤器(PropertyFilter)，在特定属性上的过滤器
+message PropertyFilter {
+    // 属性过滤器操作符
+    enum Operator {
+        // 等于
+        EQUAL = 0;
+
+        // 小于
+        LESS_THAN = 1;
+
+        // 小于或等于
+        LESS_THAN_OR_EQUAL = 2;
+
+        // 大于
+        GREATER_THAN = 3;
+
+        // 大于或等于
+        GREATER_THAN_OR_EQUAL = 4;
+
+        // 字符串包含
+        LIKE = 5;
+
+        // 不等于
+        NOT_EQUAL = 6;
+
+        // 数组包含，属性域必须是数组
+        ARRAY_CONTAINS = 7;
+
+        // 在数组中，要求值是非空数组
+        IN = 8;
+    }
+
+    // 过滤的属性
+    PropertyReference property = 1;
+
+    // 过滤的操作符
+    Operator op = 2;
+
+    // 和属性比较的值(value)
+    Value value = 3;
+}
+
+// 分页
+message Page {
+  // 页数
+  int32 pageIndex = 1;
+
+  // 分页大小
+  int32 pageSize = 2;
+}
+
+// 一个能够包含所以所有的值类型的消息(message)
+message Value {
+    // 必须有一种值
+    oneof value_type {
+        // 空
+        //google.protobuf.NullValue null_value = 11;
+
+        // 布尔
+        bool booleanValue = 1;
+
+        // 整形
+        int64 integerValue = 2;
+
+        // 浮点
+        double doubleValue = 3;
+
+        // 字符串
+        string stringValue = 17;
+
+        // 字节
+        bytes bytesValue = 18;
+
+        // 数组
+        ArrayValue arrayValue = 9;
+    }
+}
+
+// 数组
+message ArrayValue {
+    // 数组中的值
+    repeated Value values = 1;
+}
