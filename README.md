@@ -9,4 +9,4 @@
     │   ├── api         # 例如 api 包
     ├── services        # 具体服务目录
     │   ├── example     # 例如 example 服务
-    ├── third_party     # 第三方文件目录"# kratos-sum" 
+    ├── third_party     # 第三方文件目录

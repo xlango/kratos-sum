@@ -32,11 +32,11 @@ require (
 	github.com/uber/jaeger-lib v2.2.0+incompatible
 	github.com/urfave/cli v1.22.2 // indirect
 	go.uber.org/atomic v1.5.1 // indirect
-	golang.org/x/crypto v0.0.0-20200109152110-61a87790db17 // indirect
+	golang.org/x/crypto v0.0.0-20200115085410-6d4e4cb37c7d // indirect
 	golang.org/x/net v0.0.0-20191011234655-491137f69257
-	golang.org/x/sys v0.0.0-20200113162924-86b910548bc1 // indirect
+	golang.org/x/sys v0.0.0-20200116001909-b77594299b42 // indirect
 	golang.org/x/time v0.0.0-20191024005414-555d28b269f0
-	golang.org/x/tools v0.0.0-20200115044656-831fdb1e1868 // indirect
+	golang.org/x/tools v0.0.0-20200117012304-6edc0a871e69 // indirect
 	google.golang.org/genproto v0.0.0-20200108215221-bd8f9a0ef82f
 	google.golang.org/grpc v1.26.0
 )
