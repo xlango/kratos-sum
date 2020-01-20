@@ -4,18 +4,23 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/prometheus/common/log"
 	pb "ilinkcloud/services/auth/api"
+	"ilinkcloud/services/auth/internal/model"
 	permissionpb "ilinkcloud/services/permission/api"
+	"ilinkcloud/services/public/tran"
 	"math/rand"
 	"time"
 )
 
 type UserDao interface {
 	Login(ctx context.Context, req *pb.UserLoginReq) (resp *pb.UserLoginResp, err error)
+	UserSave(ctx context.Context, req *pb.UserSaveReq) (resp *pb.UserSaveResp, err error)
 }
 
 func (d *dao) Login(ctx context.Context, req *pb.UserLoginReq) (resp *pb.UserLoginResp, err error) {
 	user, err := d.FindUserByUsername(ctx, req.Username)
+	defer d.Close()
 	if err != nil {
 		err = errors.New("username is not exist")
 		return
@@ -36,8 +41,8 @@ func (d *dao) Login(ctx context.Context, req *pb.UserLoginReq) (resp *pb.UserLog
 	//	return
 	//}
 
-	//ctx, cancel := context.WithTimeout(ctx, 100*time.Millisecond)
-	//defer cancel()
+	ctx, cancel := context.WithTimeout(ctx, 5000*time.Millisecond)
+	defer cancel()
 
 	_, err = d.permissionClient.SayHello(ctx, &permissionpb.HelloReq{Name: resp.Token})
 
@@ -57,4 +62,36 @@ func GetRandomString(l int) string {
 		result = append(result, bytes[r.Intn(len(bytes))])
 	}
 	return string(result)
+}
+
+func (d *dao) UserSave(ctx context.Context, req *pb.UserSaveReq) (resp *pb.UserSaveResp, err error) {
+	tx, err := tran.TMBegin(d.db, true, 2)
+	defer tx.Close()
+
+	if err != nil {
+		log.Errorln(err)
+		return nil, err
+	}
+	err = d.UpdateUserByUsername(ctx, req.Username, &model.User{Password: req.Password})
+
+	ctx = context.WithValue(ctx, "tranGroupId", tx.Msg.GroupId)
+
+	if err != nil {
+		log.Errorln(err)
+		tx.RMRollback(true)
+	} else {
+		tx.RMCommit(true)
+	}
+
+	_, err = d.permissionClient.PermissionSave(ctx, &permissionpb.PermissionSaveReq{UserId: req.Username, PermissionName: "per1"})
+	if err != nil {
+		log.Errorln(err)
+		tx.TMCancel()
+	}
+
+	tx.Commit()
+	resp = new(pb.UserSaveResp)
+	resp.Username = req.Username
+	resp.Password = req.Password
+	return
 }

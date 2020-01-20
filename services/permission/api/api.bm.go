@@ -25,52 +25,65 @@ var _ *bm.Context
 var _ context.Context
 var _ binding.StructValidator
 
-var PathDemoPing = "/demo.service.v1.Demo/Ping"
-var PathDemoSayHello = "/demo.service.v1.Demo/SayHello"
-var PathDemoSayHelloURL = "/kratos-demo/say_hello"
+var PathPermissonPing = "/permisson.service.v1.Permisson/Ping"
+var PathPermissonSayHello = "/permisson.service.v1.Permisson/SayHello"
+var PathPermissonSayHelloURL = "/kratos-demo/say_hello"
+var PathPermissonPermissionSave = "/permission/save"
 
-// DemoBMServer is the server API for Demo service.
-type DemoBMServer interface {
+// PermissonBMServer is the server API for Permisson service.
+type PermissonBMServer interface {
 	Ping(ctx context.Context, req *google_protobuf1.Empty) (resp *google_protobuf1.Empty, err error)
 
 	SayHello(ctx context.Context, req *HelloReq) (resp *google_protobuf1.Empty, err error)
 
 	SayHelloURL(ctx context.Context, req *HelloReq) (resp *HelloResp, err error)
+
+	PermissionSave(ctx context.Context, req *PermissionSaveReq) (resp *PermissionSaveResp, err error)
 }
 
-var DemoSvc DemoBMServer
+var PermissonSvc PermissonBMServer
 
-func demoPing(c *bm.Context) {
+func permissonPing(c *bm.Context) {
 	p := new(google_protobuf1.Empty)
 	if err := c.BindWith(p, binding.Default(c.Request.Method, c.Request.Header.Get("Content-Type"))); err != nil {
 		return
 	}
-	resp, err := DemoSvc.Ping(c, p)
+	resp, err := PermissonSvc.Ping(c, p)
 	c.JSON(resp, err)
 }
 
-func demoSayHello(c *bm.Context) {
+func permissonSayHello(c *bm.Context) {
 	p := new(HelloReq)
 	if err := c.BindWith(p, binding.Default(c.Request.Method, c.Request.Header.Get("Content-Type"))); err != nil {
 		return
 	}
-	resp, err := DemoSvc.SayHello(c, p)
+	resp, err := PermissonSvc.SayHello(c, p)
 	c.JSON(resp, err)
 }
 
-func demoSayHelloURL(c *bm.Context) {
+func permissonSayHelloURL(c *bm.Context) {
 	p := new(HelloReq)
 	if err := c.BindWith(p, binding.Default(c.Request.Method, c.Request.Header.Get("Content-Type"))); err != nil {
 		return
 	}
-	resp, err := DemoSvc.SayHelloURL(c, p)
+	resp, err := PermissonSvc.SayHelloURL(c, p)
 	c.JSON(resp, err)
 }
 
-// RegisterDemoBMServer Register the blademaster route
-func RegisterDemoBMServer(e *bm.Engine, server DemoBMServer) {
-	DemoSvc = server
-	e.GET("/demo.service.v1.Demo/Ping", demoPing)
-	e.GET("/demo.service.v1.Demo/SayHello", demoSayHello)
-	e.GET("/kratos-demo/say_hello", demoSayHelloURL)
+func permissonPermissionSave(c *bm.Context) {
+	p := new(PermissionSaveReq)
+	if err := c.BindWith(p, binding.Default(c.Request.Method, c.Request.Header.Get("Content-Type"))); err != nil {
+		return
+	}
+	resp, err := PermissonSvc.PermissionSave(c, p)
+	c.JSON(resp, err)
+}
+
+// RegisterPermissonBMServer Register the blademaster route
+func RegisterPermissonBMServer(e *bm.Engine, server PermissonBMServer) {
+	PermissonSvc = server
+	e.GET("/permisson.service.v1.Permisson/Ping", permissonPing)
+	e.GET("/permisson.service.v1.Permisson/SayHello", permissonSayHello)
+	e.GET("/kratos-demo/say_hello", permissonSayHelloURL)
+	e.GET("/permission/save", permissonPermissionSave)
 }

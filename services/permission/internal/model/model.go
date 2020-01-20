@@ -10,3 +10,9 @@ type Article struct {
 	Content string
 	Author  string
 }
+
+type Permission struct {
+	Id             int64  `gorm:"primary_key"`
+	UserId         string `gorm:"type:varchar(11);not null;"`
+	PermissionName string `gorm:"type:varchar(20);not null;"`
+}

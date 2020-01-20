@@ -10,10 +10,10 @@ import (
 	"ilinkcloud/services/permission/internal/model"
 )
 
-var svc pb.DemoServer
+var svc pb.PermissonBMServer
 
 // New new a bm server.
-func New(s pb.DemoServer) (engine *bm.Engine, err error) {
+func New(s pb.PermissonBMServer) (engine *bm.Engine, err error) {
 	var (
 		cfg bm.ServerConfig
 		ct  paladin.TOML
@@ -26,7 +26,7 @@ func New(s pb.DemoServer) (engine *bm.Engine, err error) {
 	}
 	svc = s
 	engine = bm.DefaultServer(&cfg)
-	pb.RegisterDemoBMServer(engine, s)
+	pb.RegisterPermissonBMServer(engine, s)
 	initRouter(engine)
 	err = engine.Start()
 	return

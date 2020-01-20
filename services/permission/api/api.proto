@@ -8,19 +8,25 @@ import "google/protobuf/empty.proto";
 import "google/api/annotations.proto";
 
 // package 命名使用 {appid}.{version} 的方式, version 形如 v1, v2 ..
-package demo.service.v1;
+package permisson.service.v1;
 
 // NOTE: 最后请删除这些无用的注释 (゜-゜)つロ
 
 option go_package = "api";
 option (gogoproto.goproto_getters_all) = false;
 
-service Demo {
+service Permisson {
   rpc Ping(.google.protobuf.Empty) returns (.google.protobuf.Empty);
   rpc SayHello(HelloReq) returns (.google.protobuf.Empty);
   rpc SayHelloURL(HelloReq) returns (HelloResp) {
-    option (google.api.http) = {
+      option (google.api.http) = {
       get: "/kratos-demo/say_hello"
+    };
+  };
+
+  rpc PermissionSave(PermissionSaveReq) returns (PermissionSaveResp) {
+    option (google.api.http) = {
+      get: "/permission/save"
     };
   };
 }
@@ -31,4 +37,14 @@ message HelloReq {
 
 message HelloResp {
   string Content = 1 [(gogoproto.jsontag) = 'content'];
+}
+
+message PermissionSaveReq {
+  string UserId = 1 [(gogoproto.moretags) = 'form:"userId" validate:"required"'];
+  string PermissionName = 2 [(gogoproto.moretags) = 'form:"permissionName" validate:"required"'];
+}
+
+message PermissionSaveResp {
+  string UserId = 1 [(gogoproto.moretags) = 'form:"userId" validate:"required"'];
+  string PermissionId = 2 [(gogoproto.moretags) = 'form:"permissionId" validate:"required"'];
 }

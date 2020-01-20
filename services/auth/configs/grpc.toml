@@ -1,7 +1,7 @@
 [Server]
     addr = "0.0.0.0:9000"
-    timeout = "1s"
+    timeout = "5s"
 
 [Client]
     addr = "0.0.0.0:9001"
-    timeout = "1s"
+    timeout = "5s"

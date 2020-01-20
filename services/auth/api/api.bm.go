@@ -25,14 +25,17 @@ var _ *bm.Context
 var _ context.Context
 var _ binding.StructValidator
 
-var PathAuthPing = "/demo.service.v1.Auth/Ping"
+var PathAuthPing = "/auth.service.v1.Auth/Ping"
 var PathAuthLogin = "/user/login"
+var PathAuthUserSave = "/user/save"
 
 // AuthBMServer is the server API for Auth service.
 type AuthBMServer interface {
 	Ping(ctx context.Context, req *google_protobuf1.Empty) (resp *google_protobuf1.Empty, err error)
 
 	Login(ctx context.Context, req *UserLoginReq) (resp *UserLoginResp, err error)
+
+	UserSave(ctx context.Context, req *UserSaveReq) (resp *UserSaveResp, err error)
 }
 
 var AuthSvc AuthBMServer
@@ -55,9 +58,19 @@ func authLogin(c *bm.Context) {
 	c.JSON(resp, err)
 }
 
+func authUserSave(c *bm.Context) {
+	p := new(UserSaveReq)
+	if err := c.BindWith(p, binding.Default(c.Request.Method, c.Request.Header.Get("Content-Type"))); err != nil {
+		return
+	}
+	resp, err := AuthSvc.UserSave(c, p)
+	c.JSON(resp, err)
+}
+
 // RegisterAuthBMServer Register the blademaster route
 func RegisterAuthBMServer(e *bm.Engine, server AuthBMServer) {
 	AuthSvc = server
-	e.GET("/demo.service.v1.Auth/Ping", authPing)
+	e.GET("/auth.service.v1.Auth/Ping", authPing)
 	e.POST("/user/login", authLogin)
+	e.POST("/user/save", authUserSave)
 }

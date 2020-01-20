@@ -7,13 +7,19 @@ import (
 
 func (d *dao) FindUserByUsername(ctx context.Context, username string) (resp *model.User, err error) {
 
-	db, closeFunc, err := NewDB()
-	defer closeFunc()
-
 	resp = new(model.User)
-	db = db.Where(&model.User{Username: username}).First(&resp)
-	if db.Error != nil {
-		err = db.Error
+	d.db = d.db.Where(&model.User{Username: username}).First(&resp)
+	if d.db.Error != nil {
+		err = d.db.Error
+	}
+	return
+}
+
+func (d *dao) UpdateUserByUsername(ctx context.Context, username string, req *model.User) (err error) {
+
+	err = d.db.Table("tb_user").Where("username = ?", username).UpdateColumn("password", req.Password).Error
+	if d.db.Error != nil {
+		err = d.db.Error
 	}
 	return
 }

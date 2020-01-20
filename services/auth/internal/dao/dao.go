@@ -41,7 +41,7 @@ type dao struct {
 	cache      *fanout.Fanout
 	demoExpire int32
 
-	permissionClient permissionpb.DemoClient
+	permissionClient permissionpb.PermissonClient
 }
 
 // New new a dao and return.
@@ -60,7 +60,7 @@ func newDao(r *redis.Client, mc *memcache.Memcache, db *gorm.DB) (d *dao, cf fun
 
 	grpccfg := &warden.ClientConfig{}
 	paladin.Get("grpc.toml").UnmarshalTOML(grpccfg)
-	var grpcClient permissionpb.DemoClient
+	var grpcClient permissionpb.PermissonClient
 	if grpcClient, err = permissionpb.NewClient(grpccfg); err != nil {
 		return
 	}

@@ -16,9 +16,9 @@
         "application/json"
     ],
     "paths": {
-        "/demo.service.v1.Auth/Ping": {
+        "/auth.service.v1.Auth/Ping": {
             "get": {
-                "summary": "/demo.service.v1.Auth/Ping",
+                "summary": "/auth.service.v1.Auth/Ping",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -39,7 +39,7 @@
                     }
                 },
                 "tags": [
-                    "demo.service.v1.Auth"
+                    "auth.service.v1.Auth"
                 ]
             }
         },
@@ -59,7 +59,7 @@
                                     "type": "string"
                                 },
                                 "data": {
-                                    "$ref": "#/definitions/.demo.service.v1.UserLoginResp"
+                                    "$ref": "#/definitions/.auth.service.v1.UserLoginResp"
                                 }
                             }
                         }
@@ -71,18 +71,55 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/.demo.service.v1.UserLoginReq"
+                            "$ref": "#/definitions/.auth.service.v1.UserLoginReq"
                         }
                     }
                 ],
                 "tags": [
-                    "demo.service.v1.Auth"
+                    "auth.service.v1.Auth"
+                ]
+            }
+        },
+        "/user/save": {
+            "post": {
+                "summary": "/user/save",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "code": {
+                                    "type": "integer"
+                                },
+                                "message": {
+                                    "type": "string"
+                                },
+                                "data": {
+                                    "$ref": "#/definitions/.auth.service.v1.UserSaveResp"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/.auth.service.v1.UserSaveReq"
+                        }
+                    }
+                ],
+                "tags": [
+                    "auth.service.v1.Auth"
                 ]
             }
         }
     },
     "definitions": {
-        ".demo.service.v1.UserLoginReq": {
+        ".auth.service.v1.UserLoginReq": {
             "type": "object",
             "properties": {
                 "username": {
@@ -97,7 +134,7 @@
                 "password"
             ]
         },
-        ".demo.service.v1.UserLoginResp": {
+        ".auth.service.v1.UserLoginResp": {
             "type": "object",
             "properties": {
                 "username": {
@@ -107,6 +144,36 @@
                     "type": "string"
                 }
             }
+        },
+        ".auth.service.v1.UserSaveReq": {
+            "type": "object",
+            "properties": {
+                "username": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "username",
+                "password"
+            ]
+        },
+        ".auth.service.v1.UserSaveResp": {
+            "type": "object",
+            "properties": {
+                "username": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "username",
+                "password"
+            ]
         },
         ".google.protobuf.Empty": {
             "type": "object",

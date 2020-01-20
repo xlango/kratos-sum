@@ -8,7 +8,7 @@ import "google/protobuf/empty.proto";
 import "google/api/annotations.proto";
 
 // package 命名使用 {appid}.{version} 的方式, version 形如 v1, v2 ..
-package demo.service.v1;
+package auth.service.v1;
 
 // NOTE: 最后请删除这些无用的注释 (゜-゜)つロ
 
@@ -23,6 +23,12 @@ service Auth {
       post: "/user/login"
     };
   };
+
+  rpc UserSave(UserSaveReq) returns (UserSaveResp) {
+    option (google.api.http) = {
+      post: "/user/save"
+    };
+  };
 }
 
 message UserLoginReq {
@@ -33,4 +39,13 @@ message UserLoginReq {
 message UserLoginResp {
   string Username = 1 [(gogoproto.jsontag) = 'username'];
   string Token = 2 [(gogoproto.jsontag) = 'token'];
+}
+
+message UserSaveReq {
+   string Username = 1 [(gogoproto.moretags) = 'form:"username" validate:"required"'];
+   string Password = 2 [(gogoproto.moretags) = 'form:"password" validate:"required"'];
+}
+message UserSaveResp {
+  string Username = 1 [(gogoproto.moretags) = 'form:"username" validate:"required"'];
+  string Password = 2 [(gogoproto.moretags) = 'form:"password" validate:"required"'];
 }

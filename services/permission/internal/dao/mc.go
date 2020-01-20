@@ -3,11 +3,11 @@ package dao
 import (
 	"context"
 	"fmt"
+	"ilinkcloud/services/permission/internal/model"
 
 	"github.com/bilibili/kratos/pkg/cache/memcache"
 	"github.com/bilibili/kratos/pkg/conf/paladin"
 	"github.com/bilibili/kratos/pkg/log"
-	"ilinkcloud/services/permission/internal/model"
 )
 
 //go:generate kratos tool genmc

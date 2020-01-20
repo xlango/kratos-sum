@@ -13,3 +13,12 @@ func (s *Service) Login(ctx context.Context, req *pb.UserLoginReq) (resp *pb.Use
 	}
 	return
 }
+
+func (s *Service) UserSave(ctx context.Context, req *pb.UserSaveReq) (resp *pb.UserSaveResp, err error) {
+	resp, err = s.dao.UserSave(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	return
+}
