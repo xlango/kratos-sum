@@ -41,7 +41,7 @@ func (d *dao) Login(ctx context.Context, req *pb.UserLoginReq) (resp *pb.UserLog
 	//	return
 	//}
 
-	ctx, cancel := context.WithTimeout(ctx, 5000*time.Millisecond)
+	ctx, cancel := context.WithDeadline(ctx, time.Now().Add(3*time.Second))
 	defer cancel()
 
 	_, err = d.permissionClient.SayHello(ctx, &permissionpb.HelloReq{Name: resp.Token})
@@ -82,6 +82,9 @@ func (d *dao) UserSave(ctx context.Context, req *pb.UserSaveReq) (resp *pb.UserS
 	} else {
 		tx.RMCommit(true)
 	}
+
+	ctx, cancel := context.WithDeadline(ctx, time.Now().Add(3*time.Second))
+	defer cancel()
 
 	_, err = d.permissionClient.PermissionSave(ctx, &permissionpb.PermissionSaveReq{UserId: req.Username, PermissionName: "per1"})
 	if err != nil {
