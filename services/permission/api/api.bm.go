@@ -28,7 +28,7 @@ var _ binding.StructValidator
 var PathPermissonPing = "/permisson.service.v1.Permisson/Ping"
 var PathPermissonSayHello = "/permisson.service.v1.Permisson/SayHello"
 var PathPermissonSayHelloURL = "/kratos-demo/say_hello"
-var PathPermissonPermissionSave = "/permission/save"
+var PathPermissonPermissionSave = "/permisson.service.v1.Permisson/PermissionSave"
 
 // PermissonBMServer is the server API for Permisson service.
 type PermissonBMServer interface {
@@ -85,5 +85,5 @@ func RegisterPermissonBMServer(e *bm.Engine, server PermissonBMServer) {
 	e.GET("/permisson.service.v1.Permisson/Ping", permissonPing)
 	e.GET("/permisson.service.v1.Permisson/SayHello", permissonSayHello)
 	e.GET("/kratos-demo/say_hello", permissonSayHelloURL)
-	e.GET("/permission/save", permissonPermissionSave)
+	e.GET("/permisson.service.v1.Permisson/PermissionSave", permissonPermissionSave)
 }

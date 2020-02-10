@@ -13,10 +13,11 @@ type PermissionDao interface {
 }
 
 func (d *dao) PermissionSave(ctx context.Context, req *pb.PermissionSaveReq) (resp *pb.PermissionSaveResp, err error) {
-	groupId := ctx.Value("tranGroupId")
+	//groupId := ctx.Value("tranGroupId")
+	groupId := req.TranGroupId
 
 	tx, err := tran.TMBegin(d.db, false)
-	tx.Msg.GroupId = groupId.(string)
+	tx.Msg.GroupId = groupId
 	defer tx.Close()
 	if err != nil {
 		log.Errorln(err.Error())
@@ -31,9 +32,9 @@ func (d *dao) PermissionSave(ctx context.Context, req *pb.PermissionSaveReq) (re
 	err = d.AddPermission(ctx, &p)
 	if err != nil {
 		log.Errorln(err)
-		tx.RMRollback(true)
+		tx.RMRollback(false)
 	} else {
-		tx.RMCommit(true)
+		tx.RMCommit(false)
 	}
 
 	tx.Commit()

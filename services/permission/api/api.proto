@@ -24,11 +24,7 @@ service Permisson {
     };
   };
 
-  rpc PermissionSave(PermissionSaveReq) returns (PermissionSaveResp) {
-    option (google.api.http) = {
-      get: "/permission/save"
-    };
-  };
+  rpc PermissionSave(PermissionSaveReq) returns (PermissionSaveResp);
 }
 
 message HelloReq {
@@ -42,6 +38,7 @@ message HelloResp {
 message PermissionSaveReq {
   string UserId = 1 [(gogoproto.moretags) = 'form:"userId" validate:"required"'];
   string PermissionName = 2 [(gogoproto.moretags) = 'form:"permissionName" validate:"required"'];
+  string TranGroupId = 3;
 }
 
 message PermissionSaveResp {

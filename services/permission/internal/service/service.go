@@ -35,6 +35,8 @@ func New(d dao.Dao) (s *Service, cf func(), err error) {
 func (s *Service) SayHello(ctx context.Context, req *pb.HelloReq) (reply *empty.Empty, err error) {
 	reply = new(empty.Empty)
 	fmt.Printf("hello %s", req.Name)
+	groupId := ctx.Value("tranGroupId")
+	fmt.Printf("groupId %s", groupId)
 	return
 }
 

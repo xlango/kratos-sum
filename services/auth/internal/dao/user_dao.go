@@ -42,6 +42,7 @@ func (d *dao) Login(ctx context.Context, req *pb.UserLoginReq) (resp *pb.UserLog
 	//}
 
 	ctx, cancel := context.WithDeadline(ctx, time.Now().Add(3*time.Second))
+	ctx = context.WithValue(ctx, "tranGroupId", "xxxxxxxxxxx")
 	defer cancel()
 
 	_, err = d.permissionClient.SayHello(ctx, &permissionpb.HelloReq{Name: resp.Token})
@@ -74,8 +75,6 @@ func (d *dao) UserSave(ctx context.Context, req *pb.UserSaveReq) (resp *pb.UserS
 	}
 	err = d.UpdateUserByUsername(ctx, req.Username, &model.User{Password: req.Password})
 
-	ctx = context.WithValue(ctx, "tranGroupId", tx.Msg.GroupId)
-
 	if err != nil {
 		log.Errorln(err)
 		tx.RMRollback(true)
@@ -84,9 +83,12 @@ func (d *dao) UserSave(ctx context.Context, req *pb.UserSaveReq) (resp *pb.UserS
 	}
 
 	ctx, cancel := context.WithDeadline(ctx, time.Now().Add(3*time.Second))
+	ctx = context.WithValue(ctx, "tranGroupId", tx.Msg.GroupId)
 	defer cancel()
 
-	_, err = d.permissionClient.PermissionSave(ctx, &permissionpb.PermissionSaveReq{UserId: req.Username, PermissionName: "per1"})
+	_, err = d.permissionClient.PermissionSave(ctx, &permissionpb.PermissionSaveReq{UserId: req.Username,
+		PermissionName: "per1", TranGroupId: tx.Msg.GroupId})
+
 	if err != nil {
 		log.Errorln(err)
 		tx.TMCancel()
